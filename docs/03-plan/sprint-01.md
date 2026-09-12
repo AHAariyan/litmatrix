@@ -10,7 +10,7 @@ Goal: validation assets live + installable skeleton.
 - [ ] Landing page HTML (assets/landing-page/index.html)
 - [ ] Forum copy + Ze-Notes DM copy (docs/05-marketing/)
 - [ ] User: accounts (forum, GitHub org, payments, email list)
-- [ ] User: post + DM (D1)
+- [x] User: post + DM (D1) — done 2026-09-12, forum posts awaiting moderation
 - [ ] Plugin skeleton from windingwind/zotero-plugin-template (src/)
 - [ ] Extra-field store: parse/write `lm.<key>: value` lines, namespace-safe
 - [ ] Field schema prefs + hidden-note mirror

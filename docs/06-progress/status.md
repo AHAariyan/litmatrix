@@ -1,6 +1,6 @@
 # Status snapshot — 2026-09-12
 
-Phase: 1 (Validation + core skeleton) — Day 0
+Phase: 1 (Validation + core skeleton) — posts live/queued, waiting for replies
 Next milestone: go/no-go 2026-09-19
 
 Done

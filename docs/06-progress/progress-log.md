@@ -24,3 +24,6 @@
 ## 2026-09-12 (validation posting)
 - Forum account "ahady" created. New thread (POST 4) submitted; held for moderation ("Posts from new users are moderated"). Do NOT re-post. Check "Your Discussions" tomorrow and record the URL here.
 - Remaining: replies in threads 79165, 101870, 131095; GitHub issue to Ze-Notes author.
+- All 5 validation posts submitted (new thread + replies in 79165, 101870, 131095 — held for moderation; GitHub issue to Ze-Notes author — live). Waiting period: Sep 13–19. Daily: check "Your Discussions" + the GitHub issue; log every reply below.
+
+### Replies log (one line each: name · what they want · would pay?)
