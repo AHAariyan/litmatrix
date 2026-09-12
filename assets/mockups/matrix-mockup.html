@@ -1,0 +1,488 @@
+<title>LitMatrix for Zotero</title>
+<style>
+  :root {
+    --chrome: #ececec; --chrome-2: #e0e0e0; --chrome-line: #c9c9c9;
+    --paper: #ffffff; --paper-alt: #f6f7f8; --line: #dcdedf;
+    --ink: #1d1d1f; --ink-2: #5a5f66; --ink-3: #8b9096;
+    --sel: #2f6fed; --sel-soft: #dfe9ff;
+    --accent: #1f6f8b; --accent-soft: #e3eff4;
+    --ok: #2e7d4f; --ok-soft: #e2f3e9; --warn: #b7791f; --warn-soft: #fbf0d9; --bad: #b3362d; --bad-soft: #f9e3e0;
+    --star: #d99a12; --shadow: 0 18px 50px rgba(0,0,0,.18), 0 2px 6px rgba(0,0,0,.10);
+    --page: #d9dbde;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --chrome: #2b2b2b; --chrome-2: #333; --chrome-line: #1a1a1a;
+      --paper: #1e1e1e; --paper-alt: #232323; --line: #343434;
+      --ink: #ececec; --ink-2: #b4b8bd; --ink-3: #7f858c;
+      --sel: #3b7bff; --sel-soft: #223a6b;
+      --accent: #5fb0cc; --accent-soft: #1d3540;
+      --ok: #6fcf97; --ok-soft: #1f3a2b; --warn: #e2b55f; --warn-soft: #3d3218; --bad: #ef8a80; --bad-soft: #43221f;
+      --star: #e9b53a; --shadow: 0 18px 50px rgba(0,0,0,.6), 0 2px 6px rgba(0,0,0,.4);
+      --page: #121314;
+    }
+  }
+  :root[data-theme="dark"] {
+    --chrome: #2b2b2b; --chrome-2: #333; --chrome-line: #1a1a1a;
+    --paper: #1e1e1e; --paper-alt: #232323; --line: #343434;
+    --ink: #ececec; --ink-2: #b4b8bd; --ink-3: #7f858c;
+    --sel: #3b7bff; --sel-soft: #223a6b;
+    --accent: #5fb0cc; --accent-soft: #1d3540;
+    --ok: #6fcf97; --ok-soft: #1f3a2b; --warn: #e2b55f; --warn-soft: #3d3218; --bad: #ef8a80; --bad-soft: #43221f;
+    --star: #e9b53a; --shadow: 0 18px 50px rgba(0,0,0,.6), 0 2px 6px rgba(0,0,0,.4);
+    --page: #121314;
+  }
+
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--page); color: var(--ink);
+    font: 13px/1.4 -apple-system, BlinkMacSystemFont, "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+    padding-block: 28px 48px; padding-inline: 20px;
+  }
+  .stage { max-width: 1240px; margin: 0 auto; display: grid; gap: 36px; }
+  .caption { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; flex-wrap: wrap; color: var(--ink-2); font-size: 12px; }
+  .caption b { color: var(--ink); font-weight: 600; letter-spacing: .02em; text-transform: uppercase; font-size: 11px; }
+  .caption .note { color: var(--ink-3); }
+
+  /* ---- window frame ---- */
+  .win { background: var(--chrome); border: 1px solid var(--chrome-line); border-radius: 10px; box-shadow: var(--shadow); overflow: hidden; }
+  .titlebar { display: grid; grid-template-columns: 70px 1fr 70px; align-items: center; height: 38px; padding-inline: 12px; border-bottom: 1px solid var(--chrome-line); background: var(--chrome); }
+  .lights { display: flex; gap: 8px; }
+  .lights i { width: 12px; height: 12px; border-radius: 50%; display: block; }
+  .lights i:nth-child(1){background:#ff5f57} .lights i:nth-child(2){background:#febc2e} .lights i:nth-child(3){background:#28c840}
+  .title { text-align: center; font-weight: 600; font-size: 13px; color: var(--ink); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .title span { color: var(--ink-2); font-weight: 400; }
+
+  .toolbar { display: flex; align-items: center; gap: 8px; padding: 8px 12px; border-bottom: 1px solid var(--chrome-line); background: var(--chrome); flex-wrap: wrap; }
+  .tb-btn { display: inline-flex; align-items: center; gap: 6px; height: 26px; padding-inline: 10px; border: 1px solid var(--chrome-line); border-radius: 6px; background: var(--paper); color: var(--ink); font-size: 12px; cursor: default; }
+  .tb-btn.primary { background: var(--accent); color: #fff; border-color: transparent; }
+  .tb-btn svg { width: 13px; height: 13px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+  .search { display: inline-flex; align-items: center; gap: 6px; height: 26px; padding-inline: 9px; border: 1px solid var(--chrome-line); border-radius: 7px; background: var(--paper); color: var(--ink-3); min-width: 220px; font-size: 12px; }
+  .grow { flex: 1; }
+  .chip { display: inline-flex; align-items: center; gap: 5px; height: 22px; padding-inline: 8px; border-radius: 11px; background: var(--accent-soft); color: var(--accent); font-size: 11px; font-weight: 600; }
+  .chip.pro { background: var(--accent); color: #fff; letter-spacing: .04em; }
+
+  .statusbar { display: flex; gap: 18px; align-items: center; padding: 6px 12px; border-top: 1px solid var(--chrome-line); color: var(--ink-2); font-size: 11.5px; flex-wrap: wrap; }
+  .statusbar .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--ok); display: inline-block; margin-right: 5px; }
+
+  /* ---- grid ---- */
+  .gridwrap { overflow-x: auto; background: var(--paper); }
+  table.grid { border-collapse: separate; border-spacing: 0; width: 100%; min-width: 1500px; font-size: 12.5px; }
+  .grid th { position: sticky; top: 0; background: var(--paper-alt); color: var(--ink-2); font-weight: 600; text-align: left; padding: 7px 10px; border-bottom: 1px solid var(--line); border-right: 1px solid var(--line); white-space: nowrap; font-size: 11.5px; user-select: none; cursor: pointer; }
+  .grid th .t { display: inline-flex; align-items: center; gap: 6px; }
+  .grid th .ty { color: var(--ink-3); font-weight: 400; font-size: 10.5px; }
+  .grid th.user { color: var(--accent); }
+  .grid th.sorted::after { content: " ▾"; color: var(--ink-3); }
+  .grid td { padding: 6px 10px; border-bottom: 1px solid var(--line); border-right: 1px solid var(--line); vertical-align: middle; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 360px; }
+  .grid td.wrap { white-space: normal; max-width: 360px; line-height: 1.3; }
+  .grid tr:hover td { background: var(--paper-alt); }
+  .grid tr.selected td { background: var(--sel-soft); }
+  .grid td.num { text-align: right; font-variant-numeric: tabular-nums; }
+  .grid td.title { max-width: 330px; }
+  .grid td.title .ic { display: inline-block; width: 12px; height: 14px; border: 1.4px solid var(--ink-3); border-radius: 2px; vertical-align: -2px; margin-right: 7px; position: relative; }
+  .grid td.title .ic::after { content: ""; position: absolute; left: 2px; right: 2px; top: 3px; height: 1.4px; background: var(--ink-3); box-shadow: 0 3px 0 var(--ink-3), 0 6px 0 var(--ink-3); }
+  .grid td[contenteditable]:focus { outline: 2px solid var(--sel); outline-offset: -2px; background: var(--paper); }
+  .grid td.editing { outline: 2px solid var(--sel); outline-offset: -2px; background: var(--paper); position: relative; overflow: visible; white-space: normal; }
+
+  .pill { display: inline-flex; align-items: center; height: 20px; padding-inline: 8px; border-radius: 10px; font-size: 11.5px; font-weight: 600; }
+  .pill.ok { background: var(--ok-soft); color: var(--ok); }
+  .pill.warn { background: var(--warn-soft); color: var(--warn); }
+  .pill.bad { background: var(--bad-soft); color: var(--bad); }
+  .pill.neutral { background: var(--paper-alt); color: var(--ink-2); border: 1px solid var(--line); }
+  .stars { color: var(--star); letter-spacing: 1px; font-size: 12px; }
+  .stars .off { color: var(--line); }
+  .grid td.empty { color: var(--ink-3); font-style: italic; }
+
+  .dropdown { position: absolute; z-index: 5; top: calc(100% + 2px); left: 6px; min-width: 160px; background: var(--paper); border: 1px solid var(--line); border-radius: 7px; box-shadow: 0 10px 30px rgba(0,0,0,.18); padding: 4px; font-size: 12px; }
+  .dropdown div { padding: 5px 8px; border-radius: 5px; display: flex; align-items: center; gap: 8px; }
+  .dropdown div.hl { background: var(--sel); color: #fff; }
+  .dropdown .sw { width: 9px; height: 9px; border-radius: 50%; }
+  .grid tfoot td { color: var(--ink-3); font-style: italic; border-right: 0; font-size: 11.5px; padding-block: 8px; }
+
+  /* ---- main Zotero window ---- */
+  .zmain { display: grid; grid-template-columns: 200px 1fr 300px; min-height: 420px; background: var(--paper); }
+  .zpane { border-right: 1px solid var(--line); background: var(--paper-alt); padding: 8px 0; font-size: 12.5px; }
+  .zpane .lib { padding: 4px 12px; color: var(--ink-2); font-weight: 600; font-size: 11px; text-transform: uppercase; letter-spacing: .04em; }
+  .zpane .row { padding: 4px 12px 4px 26px; color: var(--ink); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .zpane .row.sub { padding-left: 40px; }
+  .zpane .row.on { background: var(--sel); color: #fff; }
+  .zpane .row::before { content: ""; display: inline-block; width: 11px; height: 9px; border: 1.3px solid currentColor; border-radius: 2px; margin-right: 7px; vertical-align: -1px; opacity: .7; }
+  .zlist table { width: 100%; border-collapse: collapse; font-size: 12.5px; min-width: 620px; }
+  .zlist { overflow-x: auto; }
+  .zlist th { text-align: left; font-weight: 600; color: var(--ink-2); font-size: 11.5px; padding: 6px 8px; border-bottom: 1px solid var(--line); border-right: 1px solid var(--line); background: var(--paper-alt); white-space: nowrap; }
+  .zlist th.user { color: var(--accent); }
+  .zlist td { padding: 5px 8px; border-bottom: 1px solid var(--line); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 260px; }
+  .zlist td.num { text-align: right; font-variant-numeric: tabular-nums; }
+  .zlist tr.selected td { background: var(--sel); color: #fff; }
+  .zlist tr.selected .pill { background: rgba(255,255,255,.22); color: #fff; }
+  .zlist tr.selected .stars, .zlist tr.selected .stars .off { color: #fff; }
+  .zlist tr.selected .stars .off { opacity: .35; }
+  .ipane { border-left: 1px solid var(--line); background: var(--paper); font-size: 12.5px; overflow: hidden; }
+  .ipane .sec { border-bottom: 1px solid var(--line); }
+  .ipane .sec h4 { margin: 0; padding: 8px 12px; font-size: 12px; font-weight: 600; color: var(--ink-2); display: flex; align-items: center; gap: 8px; }
+  .ipane .sec h4 .tri { font-size: 9px; color: var(--ink-3); }
+  .ipane .sec.lm h4 { color: var(--accent); }
+  .ipane .kv { display: grid; grid-template-columns: 96px 1fr; gap: 4px 8px; padding: 4px 12px 10px; align-items: center; }
+  .ipane .kv .k { color: var(--ink-2); text-align: right; font-size: 11.5px; }
+  .ipane .kv .v { min-height: 22px; display: flex; align-items: center; }
+  .ipane .kv .v.box { border: 1px solid var(--line); border-radius: 5px; padding: 2px 7px; background: var(--paper); }
+  .ipane .kv .v.box.focus { border-color: var(--sel); box-shadow: 0 0 0 2px var(--sel-soft); }
+  .ipane .kv .v.wrap { white-space: normal; line-height: 1.3; }
+  .ipane .ttl { padding: 10px 12px 6px; font-weight: 600; line-height: 1.3; }
+  .ipane .meta { padding: 0 12px 10px; color: var(--ink-2); font-size: 11.5px; }
+  .ipane .add { color: var(--accent); padding: 0 12px 10px; font-size: 12px; }
+
+  @media (max-width: 900px) {
+    .zmain { grid-template-columns: 1fr; }
+    .zpane { display: none; }
+    .ipane { border-left: 0; border-top: 1px solid var(--line); }
+  }
+  @media (prefers-reduced-motion: no-preference) { .tb-btn { transition: filter .12s; } .tb-btn:hover { filter: brightness(.96); } }
+</style>
+
+<div class="stage">
+
+  <div class="caption">
+    <b>Mockup 1 of 2 — Matrix window</b>
+    <span class="note">Example data. Titles, authors and values are illustrative, not real papers.</span>
+  </div>
+
+  <section class="win" aria-label="LitMatrix Matrix window">
+    <div class="titlebar">
+      <div class="lights"><i></i><i></i><i></i></div>
+      <div class="title">Matrix — Ch. 2 Literature review <span>· 24 items · 7 fields</span></div>
+      <div></div>
+    </div>
+    <div class="toolbar">
+      <span class="tb-btn"><svg viewBox="0 0 24 24"><path d="M3 6h18M3 12h18M3 18h12"/></svg>Ch. 2 Literature review ▾</span>
+      <span class="search"><svg viewBox="0 0 24 24" width="13" height="13" style="fill:none;stroke:currentColor;stroke-width:1.8"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>Filter rows…</span>
+      <span class="chip">Verdict = Include, Maybe ✕</span>
+      <span class="grow"></span>
+      <span class="tb-btn"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>Add field</span>
+      <span class="tb-btn">Templates ▾</span>
+      <span class="tb-btn">Views: Supervisor summary ▾</span>
+      <span class="tb-btn primary"><svg viewBox="0 0 24 24"><path d="M12 3v12m0 0 4-4m-4 4-4-4M4 17v3h16v-3"/></svg>Export ▾</span>
+      <span class="chip pro">PRO</span>
+    </div>
+
+    <div class="gridwrap">
+      <table class="grid" id="grid">
+        <thead>
+          <tr>
+            <th style="width:32px"></th>
+            <th class="sorted"><span class="t">Title</span></th>
+            <th><span class="t">First author</span></th>
+            <th><span class="t">Year</span></th>
+            <th class="user"><span class="t">Method <span class="ty">select</span></span></th>
+            <th class="user"><span class="t">Sample (n) <span class="ty">number</span></span></th>
+            <th class="user" style="min-width:340px"><span class="t">Key finding <span class="ty">text</span></span></th>
+            <th class="user"><span class="t">Relevance <span class="ty">1–5</span></span></th>
+            <th class="user"><span class="t">Risk of bias <span class="ty">select</span></span></th>
+            <th class="user"><span class="t">Verdict <span class="ty">select</span></span></th>
+            <th class="user" style="min-width:210px"><span class="t">Note to self <span class="ty">text</span></span></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="num">1</td>
+            <td class="title"><span class="ic"></span>Spaced retrieval practice and long-term retention of pharmacology in second-year medical students</td>
+            <td>Okafor</td><td class="num">2024</td>
+            <td><span class="pill neutral">RCT</span></td>
+            <td class="num">312</td>
+            <td class="wrap" contenteditable="true" spellcheck="false">Spaced group retained 23% more at 6 months; effect held across baseline ability.</td>
+            <td><span class="stars">★★★★★</span></td>
+            <td><span class="pill ok">Low</span></td>
+            <td><span class="pill ok">Include</span></td>
+            <td class="wrap" contenteditable="true" spellcheck="false">Anchor study for §2.3</td>
+          </tr>
+          <tr class="selected">
+            <td class="num">2</td>
+            <td class="title"><span class="ic"></span>Flashcard app usage patterns and exam performance: a cohort study</td>
+            <td>Lindqvist</td><td class="num">2023</td>
+            <td><span class="pill neutral">Cohort</span></td>
+            <td class="num">1,084</td>
+            <td class="wrap" contenteditable="true" spellcheck="false">Daily use correlated with +0.31 SD exam score; self-selection not controlled.</td>
+            <td><span class="stars">★★★★<span class="off">★</span></span></td>
+            <td class="editing">
+              <span class="pill warn">Some concerns</span>
+              <div class="dropdown" role="listbox" aria-label="Risk of bias options">
+                <div><span class="sw" style="background:var(--ok)"></span>Low</div>
+                <div class="hl"><span class="sw" style="background:var(--warn)"></span>Some concerns</div>
+                <div><span class="sw" style="background:var(--bad)"></span>High</div>
+                <div><span class="sw" style="background:var(--ink-3)"></span>Not assessed</div>
+              </div>
+            </td>
+            <td><span class="pill ok">Include</span></td>
+            <td class="wrap" contenteditable="true" spellcheck="false">Ask supervisor re: confounding</td>
+          </tr>
+          <tr>
+            <td class="num">3</td>
+            <td class="title"><span class="ic"></span>Interleaving versus blocking in anatomy laboratory sessions</td>
+            <td>Marchetti</td><td class="num">2022</td>
+            <td><span class="pill neutral">Quasi-exp.</span></td>
+            <td class="num">96</td>
+            <td class="wrap" contenteditable="true" spellcheck="false">Interleaved practice slower during learning, better at delayed test (d = 0.42).</td>
+            <td><span class="stars">★★★★<span class="off">★</span></span></td>
+            <td><span class="pill warn">Some concerns</span></td>
+            <td><span class="pill ok">Include</span></td>
+            <td class="wrap" contenteditable="true" spellcheck="false"></td>
+          </tr>
+          <tr>
+            <td class="num">4</td>
+            <td class="title"><span class="ic"></span>Student perceptions of spaced repetition software: a qualitative inquiry</td>
+            <td>Duarte</td><td class="num">2021</td>
+            <td><span class="pill neutral">Qualitative</span></td>
+            <td class="num">18</td>
+            <td class="wrap" contenteditable="true" spellcheck="false">Themes: guilt about missed reviews, deck overload, distrust of premade decks.</td>
+            <td><span class="stars">★★★<span class="off">★★</span></span></td>
+            <td><span class="pill neutral">N/A</span></td>
+            <td><span class="pill warn">Maybe</span></td>
+            <td class="wrap" contenteditable="true" spellcheck="false">Useful for discussion, not results</td>
+          </tr>
+          <tr>
+            <td class="num">5</td>
+            <td class="title"><span class="ic"></span>A meta-analysis of distributed practice in health professions education, 2005–2020</td>
+            <td>Bhattacharya</td><td class="num">2021</td>
+            <td><span class="pill neutral">Meta-analysis</span></td>
+            <td class="num">4,410</td>
+            <td class="wrap" contenteditable="true" spellcheck="false">Pooled g = 0.48 (k = 27); high heterogeneity; publication bias suspected.</td>
+            <td><span class="stars">★★★★★</span></td>
+            <td><span class="pill ok">Low</span></td>
+            <td><span class="pill ok">Include</span></td>
+            <td class="wrap" contenteditable="true" spellcheck="false">Cite in intro; check funnel plot</td>
+          </tr>
+          <tr>
+            <td class="num">6</td>
+            <td class="title"><span class="ic"></span>Does gamified review improve engagement? A randomized crossover trial</td>
+            <td>Novak</td><td class="num">2023</td>
+            <td><span class="pill neutral">RCT</span></td>
+            <td class="num">140</td>
+            <td class="wrap" contenteditable="true" spellcheck="false">Engagement up, retention unchanged at 8 weeks.</td>
+            <td><span class="stars">★★<span class="off">★★★</span></span></td>
+            <td><span class="pill warn">Some concerns</span></td>
+            <td><span class="pill bad">Exclude</span></td>
+            <td class="wrap" contenteditable="true" spellcheck="false">Outcome not retention</td>
+          </tr>
+          <tr>
+            <td class="num">7</td>
+            <td class="title"><span class="ic"></span>Retrieval practice with clinical vignettes: effects on diagnostic reasoning</td>
+            <td>Haddad</td><td class="num">2024</td>
+            <td><span class="pill neutral">RCT</span></td>
+            <td class="num">208</td>
+            <td class="wrap" contenteditable="true" spellcheck="false">Vignette retrieval improved transfer to novel cases (+11%).</td>
+            <td><span class="stars">★★★★<span class="off">★</span></span></td>
+            <td><span class="pill ok">Low</span></td>
+            <td><span class="pill ok">Include</span></td>
+            <td class="wrap" contenteditable="true" spellcheck="false"></td>
+          </tr>
+          <tr>
+            <td class="num">8</td>
+            <td class="title"><span class="ic"></span>Cramming, sleep and recall: a diary study during final examinations</td>
+            <td>Petrov</td><td class="num">2020</td>
+            <td><span class="pill neutral">Observational</span></td>
+            <td class="num">57</td>
+            <td class="wrap" contenteditable="true" spellcheck="false">Late-night cramming predicted lower next-day recall; small sample.</td>
+            <td><span class="stars">★★<span class="off">★★★</span></span></td>
+            <td><span class="pill bad">High</span></td>
+            <td><span class="pill warn">Maybe</span></td>
+            <td class="wrap" contenteditable="true" spellcheck="false">Tangential</td>
+          </tr>
+          <tr>
+            <td class="num">9</td>
+            <td class="title"><span class="ic"></span>Optimal spacing intervals for factual knowledge: a large-scale online experiment</td>
+            <td>Sørensen</td><td class="num">2022</td>
+            <td><span class="pill neutral">Experiment</span></td>
+            <td class="num">12,930</td>
+            <td class="wrap" contenteditable="true" spellcheck="false">Expanding intervals ≈ fixed intervals; gap-to-test ratio ~10–20% optimal.</td>
+            <td><span class="stars">★★★★★</span></td>
+            <td><span class="pill ok">Low</span></td>
+            <td><span class="pill ok">Include</span></td>
+            <td class="wrap" contenteditable="true" spellcheck="false">Figure 3 → reproduce</td>
+          </tr>
+          <tr>
+            <td class="num">10</td>
+            <td class="title"><span class="ic"></span>Premade versus self-authored flashcards in nursing pharmacology</td>
+            <td>Adeyemi</td><td class="num">2023</td>
+            <td><span class="pill neutral">Quasi-exp.</span></td>
+            <td class="num">122</td>
+            <td class="wrap" contenteditable="true" spellcheck="false">Self-authored cards: higher retention, 2× time cost.</td>
+            <td><span class="stars">★★★★<span class="off">★</span></span></td>
+            <td><span class="pill warn">Some concerns</span></td>
+            <td><span class="pill ok">Include</span></td>
+            <td class="wrap" contenteditable="true" spellcheck="false"></td>
+          </tr>
+          <tr>
+            <td class="num">11</td>
+            <td class="title"><span class="ic"></span>Spacing effects in surgical skill acquisition: a systematic review</td>
+            <td>Kowalczyk</td><td class="num">2019</td>
+            <td><span class="pill neutral">Systematic review</span></td>
+            <td class="num">—</td>
+            <td class="wrap" contenteditable="true" spellcheck="false">Distributed practice sessions superior for psychomotor skills in 9/11 studies.</td>
+            <td><span class="stars">★★★<span class="off">★★</span></span></td>
+            <td><span class="pill ok">Low</span></td>
+            <td><span class="pill warn">Maybe</span></td>
+            <td class="wrap" contenteditable="true" spellcheck="false">Skills, not knowledge — scope?</td>
+          </tr>
+          <tr>
+            <td class="num">12</td>
+            <td class="title"><span class="ic"></span>Adaptive scheduling algorithms compared: SM-2, FSRS and a Bayesian model</td>
+            <td>Reyes</td><td class="num">2024</td>
+            <td><span class="pill neutral">Simulation</span></td>
+            <td class="num">—</td>
+            <td class="wrap" contenteditable="true" spellcheck="false">FSRS reduced review load 20–30% at equal retention in simulation.</td>
+            <td><span class="stars">★★★<span class="off">★★</span></span></td>
+            <td><span class="pill neutral">N/A</span></td>
+            <td><span class="pill warn">Maybe</span></td>
+            <td class="wrap" contenteditable="true" spellcheck="false">No human data</td>
+          </tr>
+          <tr>
+            <td class="num">13</td>
+            <td class="title"><span class="ic"></span>Test-enhanced learning in a flipped physiology course</td>
+            <td>Gallagher</td><td class="num">2020</td>
+            <td><span class="pill neutral">Quasi-exp.</span></td>
+            <td class="num">233</td>
+            <td class="wrap" contenteditable="true" spellcheck="false">Weekly low-stakes quizzes raised final grades by 6 points.</td>
+            <td><span class="stars">★★★<span class="off">★★</span></span></td>
+            <td><span class="pill warn">Some concerns</span></td>
+            <td><span class="pill ok">Include</span></td>
+            <td class="wrap" contenteditable="true" spellcheck="false"></td>
+          </tr>
+          <tr>
+            <td class="num">14</td>
+            <td class="title"><span class="ic"></span>Long-term follow-up of a spaced-education intervention for residents</td>
+            <td>Yamamoto</td><td class="num">2018</td>
+            <td><span class="pill neutral">RCT</span></td>
+            <td class="num">76</td>
+            <td class="empty">— empty —</td>
+            <td><span class="stars"><span class="off">★★★★★</span></span></td>
+            <td class="empty">—</td>
+            <td class="empty">—</td>
+            <td class="wrap" contenteditable="true" spellcheck="false">Not read yet</td>
+          </tr>
+        </tbody>
+        <tfoot>
+          <tr><td colspan="11">Showing 14 of 24 rows (filtered). Values are stored in each item's Extra field as <code>lm.method: RCT</code> — they sync with your Zotero account and are plain text if you uninstall.</td></tr>
+        </tfoot>
+      </table>
+    </div>
+    <div class="statusbar">
+      <span><span class="dot"></span>Saved to Zotero</span>
+      <span>Sorted by Title</span>
+      <span>Fields: 7 / unlimited</span>
+      <span class="grow"></span>
+      <span>Double-click a row to open the PDF</span>
+    </div>
+  </section>
+
+  <div class="caption">
+    <b>Mockup 2 of 2 — Fields inside the normal Zotero window</b>
+    <span class="note">Same fields appear as sortable columns in the item list and as an editable section in the item pane.</span>
+  </div>
+
+  <section class="win" aria-label="Zotero main window with LitMatrix fields">
+    <div class="titlebar">
+      <div class="lights"><i></i><i></i><i></i></div>
+      <div class="title">Zotero <span>· My Library</span></div>
+      <div></div>
+    </div>
+    <div class="toolbar">
+      <span class="tb-btn">＋ ▾</span>
+      <span class="tb-btn">Add Item by Identifier</span>
+      <span class="grow"></span>
+      <span class="search">All Fields &amp; Tags</span>
+      <span class="tb-btn" style="color:var(--accent)">Open Matrix</span>
+    </div>
+    <div class="zmain">
+      <aside class="zpane">
+        <div class="lib">My Library</div>
+        <div class="row">PhD thesis</div>
+        <div class="row sub on">Ch. 2 Literature review</div>
+        <div class="row sub">Ch. 3 Methods</div>
+        <div class="row sub">Excluded</div>
+        <div class="row">Teaching</div>
+        <div class="row">To read</div>
+        <div class="lib" style="margin-top:10px">Group Libraries</div>
+        <div class="row">Lab systematic review 2026</div>
+      </aside>
+      <div class="zlist">
+        <table>
+          <thead>
+            <tr>
+              <th>Title</th><th>Creator</th><th>Year</th>
+              <th class="user">Method</th><th class="user">Relevance</th><th class="user">Verdict</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>A meta-analysis of distributed practice in health professions education…</td><td>Bhattacharya et al.</td><td class="num">2021</td><td><span class="pill neutral">Meta-analysis</span></td><td><span class="stars">★★★★★</span></td><td><span class="pill ok">Include</span></td></tr>
+            <tr><td>Adaptive scheduling algorithms compared: SM-2, FSRS and a Bayesian model</td><td>Reyes and Ortiz</td><td class="num">2024</td><td><span class="pill neutral">Simulation</span></td><td><span class="stars">★★★<span class="off">★★</span></span></td><td><span class="pill warn">Maybe</span></td></tr>
+            <tr><td>Cramming, sleep and recall: a diary study during final examinations</td><td>Petrov</td><td class="num">2020</td><td><span class="pill neutral">Observational</span></td><td><span class="stars">★★<span class="off">★★★</span></span></td><td><span class="pill warn">Maybe</span></td></tr>
+            <tr><td>Does gamified review improve engagement? A randomized crossover trial</td><td>Novak et al.</td><td class="num">2023</td><td><span class="pill neutral">RCT</span></td><td><span class="stars">★★<span class="off">★★★</span></span></td><td><span class="pill bad">Exclude</span></td></tr>
+            <tr class="selected"><td>Flashcard app usage patterns and exam performance: a cohort study</td><td>Lindqvist et al.</td><td class="num">2023</td><td><span class="pill neutral">Cohort</span></td><td><span class="stars">★★★★<span class="off">★</span></span></td><td><span class="pill ok">Include</span></td></tr>
+            <tr><td>Interleaving versus blocking in anatomy laboratory sessions</td><td>Marchetti and Bell</td><td class="num">2022</td><td><span class="pill neutral">Quasi-exp.</span></td><td><span class="stars">★★★★<span class="off">★</span></span></td><td><span class="pill ok">Include</span></td></tr>
+            <tr><td>Optimal spacing intervals for factual knowledge: a large-scale online experiment</td><td>Sørensen et al.</td><td class="num">2022</td><td><span class="pill neutral">Experiment</span></td><td><span class="stars">★★★★★</span></td><td><span class="pill ok">Include</span></td></tr>
+            <tr><td>Premade versus self-authored flashcards in nursing pharmacology</td><td>Adeyemi</td><td class="num">2023</td><td><span class="pill neutral">Quasi-exp.</span></td><td><span class="stars">★★★★<span class="off">★</span></span></td><td><span class="pill ok">Include</span></td></tr>
+            <tr><td>Retrieval practice with clinical vignettes: effects on diagnostic reasoning</td><td>Haddad et al.</td><td class="num">2024</td><td><span class="pill neutral">RCT</span></td><td><span class="stars">★★★★<span class="off">★</span></span></td><td><span class="pill ok">Include</span></td></tr>
+            <tr><td>Spaced retrieval practice and long-term retention of pharmacology…</td><td>Okafor et al.</td><td class="num">2024</td><td><span class="pill neutral">RCT</span></td><td><span class="stars">★★★★★</span></td><td><span class="pill ok">Include</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <aside class="ipane">
+        <div class="sec">
+          <div class="ttl">Flashcard app usage patterns and exam performance: a cohort study</div>
+          <div class="meta">Lindqvist, A.; Berg, M.; Haas, T. · Medical Education · 2023</div>
+        </div>
+        <div class="sec lm">
+          <h4><span class="tri">▼</span>LitMatrix fields</h4>
+          <div class="kv">
+            <div class="k">Method</div><div class="v"><span class="pill neutral">Cohort ▾</span></div>
+            <div class="k">Sample (n)</div><div class="v box">1,084</div>
+            <div class="k">Key finding</div><div class="v box wrap focus">Daily use correlated with +0.31 SD exam score; self-selection not controlled.</div>
+            <div class="k">Relevance</div><div class="v"><span class="stars">★★★★<span class="off">★</span></span></div>
+            <div class="k">Risk of bias</div><div class="v"><span class="pill warn">Some concerns ▾</span></div>
+            <div class="k">Verdict</div><div class="v"><span class="pill ok">Include ▾</span></div>
+            <div class="k">Note to self</div><div class="v box">Ask supervisor re: confounding</div>
+          </div>
+          <div class="add">＋ Add field…</div>
+        </div>
+        <div class="sec"><h4><span class="tri">▶</span>Info</h4></div>
+        <div class="sec"><h4><span class="tri">▶</span>Abstract</h4></div>
+        <div class="sec"><h4><span class="tri">▶</span>Attachments · 1</h4></div>
+        <div class="sec"><h4><span class="tri">▶</span>Notes · 2</h4></div>
+        <div class="sec"><h4><span class="tri">▶</span>Tags · 4</h4></div>
+      </aside>
+    </div>
+    <div class="statusbar"><span>24 items in this collection</span><span class="grow"></span><span>Extra: <code>lm.verdict: include · lm.relevance: 4</code></span></div>
+  </section>
+
+</div>
+
+<script>
+  // Small interactions so the mockup feels alive when shared: sort on header click, cycle verdict chips.
+  (function () {
+    var grid = document.getElementById('grid');
+    var heads = grid.querySelectorAll('thead th');
+    heads.forEach(function (th, i) {
+      if (i === 0) return;
+      th.addEventListener('click', function () {
+        heads.forEach(function (h) { h.classList.remove('sorted'); });
+        th.classList.add('sorted');
+        var rows = Array.prototype.slice.call(grid.querySelectorAll('tbody tr'));
+        var num = /Year|Sample/.test(th.textContent);
+        rows.sort(function (a, b) {
+          var x = a.children[i].textContent.trim(), y = b.children[i].textContent.trim();
+          if (num) { x = parseFloat(x.replace(/,/g, '')) || -1; y = parseFloat(y.replace(/,/g, '')) || -1; return y - x; }
+          return x.localeCompare(y);
+        });
+        var tb = grid.querySelector('tbody');
+        rows.forEach(function (r, n) { r.children[0].textContent = n + 1; tb.appendChild(r); });
+      });
+    });
+    var cycle = { 'Include': ['warn', 'Maybe'], 'Maybe': ['bad', 'Exclude'], 'Exclude': ['ok', 'Include'] };
+    grid.addEventListener('click', function (e) {
+      var p = e.target.closest('.pill');
+      if (!p || !cycle[p.textContent.trim()]) return;
+      var next = cycle[p.textContent.trim()];
+      p.className = 'pill ' + next[0]; p.textContent = next[1];
+    });
+  })();
+</script>
