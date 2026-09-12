@@ -20,3 +20,7 @@
 ## 2026-09-12 (evening)
 - Screenshots rendered with headless Chrome (light theme, 2x). Site folder for GitHub Pages ready in site/.
 - gh CLI not installed; user will create repo + enable Pages via github.com.
+
+## 2026-09-12 (validation posting)
+- Forum account "ahady" created. New thread (POST 4) submitted; held for moderation ("Posts from new users are moderated"). Do NOT re-post. Check "Your Discussions" tomorrow and record the URL here.
+- Remaining: replies in threads 79165, 101870, 131095; GitHub issue to Ze-Notes author.
