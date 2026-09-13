@@ -4,7 +4,7 @@ A Zotero plugin that turns a collection of papers into an editable literature-re
 matrix (rows = papers, columns = your own typed fields), stored sync-safely inside
 Zotero, with export to Excel/Word. Free core, paid Pro, later AI extraction.
 
-Status: **Phase 1 — Validation + core skeleton** (started 2026-09-12)
+Status: **PAUSED — working beta built, waiting for market feedback** (frozen 2026-09-13; see docs/06-progress/status.md)
 
 ## How this repo is organized
 

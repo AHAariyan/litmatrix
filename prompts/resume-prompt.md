@@ -24,6 +24,6 @@ Rules:
 - Zotero API reference: https://www.zotero.org/support/dev/zotero_7_for_developers
 - Template: https://github.com/windingwind/zotero-plugin-template
 
-Current phase: see status.md. If validation (docs/03-plan/validation-plan.md) has
+Current phase: PAUSED (see status.md). Do not build further unless the owner reports user feedback or explicitly un-pauses. If validation (docs/03-plan/validation-plan.md) has
 not been decided, ask the owner for the forum/landing-page results before starting
 Phase 3 (paid features).

@@ -42,3 +42,7 @@
 - Verified: Extra-field store (foreign lines preserved, remove, multi-line), 6 columns registered and visible, item-pane section with 6 controls, matrix window (library + collection scope, 3/5 rows), in-matrix edits write to Extra, sort, filter, fields dialog add/rename/remove syncing columns and matrix headers. Console clean apart from toolkit deprecation warnings.
 - Bugs fixed: Zotero 10 removed getSelectedCollection()/getSelectedSavedSearch()/getSelectedLibraryID() → plural APIs with fallback; column refresh must unregister using Zotero's returned internal key; matrix window obtains Zotero via ChromeUtils.importESModule.
 - Rebuilt beta .xpi and republished to site/ (GitHub Pages).
+
+## 2026-09-13 (late) — PAUSED
+- Owner decision: no more building or testing until market feedback arrives. Project frozen in a working, documented state. Moving on to explore other ideas in parallel.
+- Daily 2-minute check still applies: forum "Participated" list + GitHub issue #34.
