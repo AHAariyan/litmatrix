@@ -10,7 +10,7 @@ import { getAllValues, setValue } from "./store";
 
 interface Scope {
   kind: "collection" | "search" | "library";
-  id: number; // collectionID / searchID / libraryID
+  ids: number[]; // collectionIDs / searchIDs / libraryIDs (Zotero 10 supports multi-select)
   name: string;
 }
 
@@ -37,14 +37,35 @@ const FIXED: { key: string; label: string; cls?: string }[] = [
 ];
 
 function currentScope(win: _ZoteroTypes.MainWindow): Scope {
-  const pane = win.ZoteroPane;
-  const collection = pane.getSelectedCollection();
-  if (collection) return { kind: "collection", id: collection.id, name: collection.name };
-  const search = pane.getSelectedSavedSearch();
-  if (search) return { kind: "search", id: search.id, name: search.name };
-  const libraryID = pane.getSelectedLibraryID();
-  const lib = Zotero.Libraries.get(libraryID);
-  return { kind: "library", id: libraryID, name: lib ? lib.name : "Library" };
+  const pane = win.ZoteroPane as any;
+  // Zotero 10 replaced the singular getters with plural ones (multi-selection).
+  const collections: Zotero.Collection[] = pane.getSelectedCollections
+    ? pane.getSelectedCollections() || []
+    : [pane.getSelectedCollection?.()].filter(Boolean);
+  if (collections.length)
+    return {
+      kind: "collection",
+      ids: collections.map((c) => c.id),
+      name: collections.map((c) => c.name).join(" + "),
+    };
+  const searches: Zotero.Search[] = pane.getSelectedSavedSearches
+    ? pane.getSelectedSavedSearches() || []
+    : [pane.getSelectedSavedSearch?.()].filter(Boolean);
+  if (searches.length)
+    return {
+      kind: "search",
+      ids: searches.map((s) => s.id),
+      name: searches.map((s) => s.name).join(" + "),
+    };
+  const libraryIDs: number[] = pane.getSelectedLibraryIDs
+    ? pane.getSelectedLibraryIDs() || []
+    : [pane.getSelectedLibraryID?.()].filter((x: any) => typeof x === "number");
+  const ids = libraryIDs.length ? libraryIDs : [Zotero.Libraries.userLibraryID];
+  return {
+    kind: "library",
+    ids,
+    name: ids.map((id) => (Zotero.Libraries.get(id) as any)?.name || "Library").join(" + "),
+  };
 }
 
 export function openMatrix(win?: _ZoteroTypes.MainWindow): void {
@@ -64,26 +85,34 @@ export function openMatrix(win?: _ZoteroTypes.MainWindow): void {
 }
 
 async function loadRows(scope: Scope): Promise<Row[]> {
-  let items: Zotero.Item[] = [];
-  if (scope.kind === "collection") {
-    const c = Zotero.Collections.get(scope.id) as Zotero.Collection;
-    items = c ? (c.getChildItems(false, false) as Zotero.Item[]) : [];
-  } else if (scope.kind === "search") {
-    const s = Zotero.Searches.get(scope.id) as Zotero.Search;
-    const ids = s ? await s.search() : [];
-    items = Zotero.Items.get(ids) as Zotero.Item[];
-  } else {
-    items = (await Zotero.Items.getAll(scope.id, true, false)) as Zotero.Item[];
+  const seen = new Set<number>();
+  const items: Zotero.Item[] = [];
+  const push = (list: Zotero.Item[]) => {
+    for (const it of list) {
+      if (it && it.isRegularItem() && !seen.has(it.id)) {
+        seen.add(it.id);
+        items.push(it);
+      }
+    }
+  };
+  for (const id of scope.ids) {
+    if (scope.kind === "collection") {
+      const c = Zotero.Collections.get(id) as Zotero.Collection;
+      if (c) push(c.getChildItems(false, false) as Zotero.Item[]);
+    } else if (scope.kind === "search") {
+      const s = Zotero.Searches.get(id) as Zotero.Search;
+      if (s) push(Zotero.Items.get(await s.search()) as Zotero.Item[]);
+    } else {
+      push((await Zotero.Items.getAll(id, true, false)) as Zotero.Item[]);
+    }
   }
-  return items
-    .filter((i) => i.isRegularItem())
-    .map((item) => ({
-      item,
-      title: (item.getField("title") as string) || "(untitled)",
-      author: item.firstCreator || "",
-      year: String(item.getField("year") || ""),
-      values: getAllValues(item),
-    }));
+  return items.map((item) => ({
+    item,
+    title: (item.getField("title") as string) || "(untitled)",
+    author: item.firstCreator || "",
+    year: String(item.getField("year") || ""),
+    values: getAllValues(item),
+  }));
 }
 
 /** Called from matrix.xhtml once the window has loaded. */

@@ -1,6 +1,6 @@
 # Status snapshot — 2026-09-12
 
-Phase: 1 — posts queued in forum moderation; free core v0.1.0-beta.1 BUILT (untested in Zotero). Next: install Zotero, smoke-test, fix, then hand .xpi to first responders.
+Phase: 1 — posts queued in forum moderation; free core v0.1.0-beta.1 VERIFIED in Zotero 10.0.2 (automated tests pass). Next: owner visual check, then hand .xpi to first responders; Round-2 outreach after that.
 Next milestone: go/no-go 2026-09-19
 
 Done

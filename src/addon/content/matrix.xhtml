@@ -10,8 +10,7 @@
     window.addEventListener("load", function () {
       if (typeof Zotero === "undefined") {
         try {
-          window.Zotero = Components.classes["@zotero.org/Zotero;1"]
-            .getService(Components.interfaces.nsISupports).wrappedJSObject;
+          window.Zotero = ChromeUtils.importESModule("chrome://zotero/content/zotero.mjs").Zotero;
         } catch (e) {}
       }
       if (typeof Zotero === "undefined" || !Zotero.__addonInstance__) {

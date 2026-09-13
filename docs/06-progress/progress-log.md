@@ -35,3 +35,10 @@
 - Validation posts still in forum moderation; GitHub issue #34 to Ze-Notes open, no reply.
 - Zotero 10.0.2 installed to /Applications by the AI; isolated dev profile at .dev/profile, data at .dev/data (gitignored). `npm start` launches Zotero with hot reload.
 - Plan B shortlist written: docs/03-plan/plan-b-shortlist.md. Kill/pivot rule: <5 signals by 2026-09-24.
+
+## 2026-09-13 (evening) — first working beta verified in Zotero 10.0.2
+- Built tools/zeval.mjs: runs JavaScript inside the live dev Zotero over the remote-debugger port; gives us automated tests without a screen.
+- Dev library seeded with 5 example papers through the local connector endpoint (port 23124).
+- Verified: Extra-field store (foreign lines preserved, remove, multi-line), 6 columns registered and visible, item-pane section with 6 controls, matrix window (library + collection scope, 3/5 rows), in-matrix edits write to Extra, sort, filter, fields dialog add/rename/remove syncing columns and matrix headers. Console clean apart from toolkit deprecation warnings.
+- Bugs fixed: Zotero 10 removed getSelectedCollection()/getSelectedSavedSearch()/getSelectedLibraryID() → plural APIs with fallback; column refresh must unregister using Zotero's returned internal key; matrix window obtains Zotero via ChromeUtils.importESModule.
+- Rebuilt beta .xpi and republished to site/ (GitHub Pages).

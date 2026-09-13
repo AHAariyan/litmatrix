@@ -6,6 +6,8 @@ import { registerItemPaneSection, unregisterItemPaneSection } from "./modules/it
 import { registerMenus } from "./modules/menu";
 import { onMatrixLoad as matrixLoad, openMatrix } from "./modules/matrix";
 import { openFieldsDialog } from "./modules/fieldsDialog";
+import * as store from "./modules/store";
+import * as schema from "./modules/schema";
 
 const schemaListeners = new Set<() => void>();
 let offSchema: (() => void) | null = null;
@@ -18,6 +20,7 @@ async function onStartup() {
   ]);
   initLocale();
   loadSchema();
+  addon.api = { store, schema, openMatrix, openFieldsDialog };
   await registerFieldColumns();
   registerItemPaneSection();
 

@@ -16,7 +16,9 @@ Goal: validation assets live + installable skeleton.
 - [x] Field schema in prefs (hidden-note mirror deferred to v1.1)
 - [x] registerColumn for each field; registerSection with editable rows
 - [x] Matrix window: grid, inline edit, sort, filter (basic)
-- [ ] Manual test on Zotero 7 and 10 (macOS) — BLOCKED: Zotero not installed on dev machine; user to install
+- [x] Smoke + functional test on Zotero 10.0.2 (automated via tools/zeval.mjs): store, columns, item-pane section, matrix (collection scope, edit, sort, filter), fields dialog add/rename/remove — all pass, no console errors
+- [ ] Visual check by owner (screenshots of item pane + matrix window)
+- [ ] Test on Zotero 7.x (older API names) — later, via a second Zotero install
 - [ ] progress-log entries daily
 
 ## Definition of done
