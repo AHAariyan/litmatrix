@@ -33,3 +33,5 @@
 - Beta .xpi: src/.scaffold/build/lit-matrix-for-zotero.xpi, copied to site/litmatrix-0.1.0-beta.1.xpi (served by GitHub Pages).
 - NOT yet run inside Zotero (not installed on this Mac). First manual test is the next task.
 - Validation posts still in forum moderation; GitHub issue #34 to Ze-Notes open, no reply.
+- Zotero 10.0.2 installed to /Applications by the AI; isolated dev profile at .dev/profile, data at .dev/data (gitignored). `npm start` launches Zotero with hot reload.
+- Plan B shortlist written: docs/03-plan/plan-b-shortlist.md. Kill/pivot rule: <5 signals by 2026-09-24.

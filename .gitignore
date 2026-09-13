@@ -1,0 +1,5 @@
+.dev/
+src/node_modules/
+src/.scaffold/
+src/.env
+.DS_Store
