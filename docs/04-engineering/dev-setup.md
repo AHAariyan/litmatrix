@@ -1,7 +1,7 @@
 # Dev setup
 
-1. Install Zotero 7+ (and a second profile for Zotero 10 beta if available).
-2. `git clone https://github.com/windingwind/zotero-plugin-template src` then rename.
+1. Install Zotero (current: 10.x) from https://www.zotero.org/download. Create a dev profile: run `/Applications/Zotero.app/Contents/MacOS/zotero -P`, create profile 'litmatrix-dev'.
+2. Source already lives in `src/` (template cloned and renamed 2026-09-13).
 3. `npm install`; copy `.env.example` → `.env` with Zotero binary and profile paths.
 4. `npm start` — launches Zotero with the plugin hot-reloading.
 5. `npm run build` — produces `.xpi` in `build/`.

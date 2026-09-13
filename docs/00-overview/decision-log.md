@@ -7,3 +7,6 @@
 | 2026-09-12 | Store all custom values in the item's Extra field as `key: value` lines | Only sync-safe storage per Zotero staff guidance (May 2024); Reading List plugin (573 stars) proves it works | Separate SQLite table (breaks sync), notes (unstructured) |
 | 2026-09-12 | Free core + paid Pro (~$25/yr or $49 lifetime); AI extraction as credits later | Matches ecosystem norms (Beaver, PapersGPT); stated student WTP $20–30/yr | Fully free (no revenue); subscription-only (open-source backlash) |
 | 2026-09-12 | Working name "LitMatrix for Zotero" | Descriptive, searchable; revisit before launch | ZotMatrix, Matrix Notes |
+| 2026-09-13 | Build on windingwind/zotero-plugin-template + zotero-plugin-toolkit (MIT) | Fastest path; toolkit is MIT so shippable; template repo is AGPL — boilerplate is small and can be rewritten before any closed Pro code | Hand-rolled bootstrap (slower) |
+| 2026-09-13 | manifest strict_max_version = 10.* | Zotero 10 is current (Aug 2026) | 8.* (template default, would block install) |
+| 2026-09-13 | Matrix window = plain XHTML chrome window opened with openDialog(), table rendered by bundled TS | Simple, no framework; virtualize later if >2k rows slow | ztoolkit.Dialog grid; React |

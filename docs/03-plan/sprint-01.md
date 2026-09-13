@@ -11,12 +11,12 @@ Goal: validation assets live + installable skeleton.
 - [ ] Forum copy + Ze-Notes DM copy (docs/05-marketing/)
 - [ ] User: accounts (forum, GitHub org, payments, email list)
 - [x] User: post + DM (D1) — done 2026-09-12, forum posts awaiting moderation
-- [ ] Plugin skeleton from windingwind/zotero-plugin-template (src/)
-- [ ] Extra-field store: parse/write `lm.<key>: value` lines, namespace-safe
-- [ ] Field schema prefs + hidden-note mirror
-- [ ] registerColumn for each field; registerSection with editable rows
-- [ ] Matrix window: grid, inline edit, sort, filter (basic)
-- [ ] Manual test on Zotero 7 and 10 (macOS)
+- [x] Plugin skeleton from windingwind/zotero-plugin-template (src/)
+- [x] Extra-field store: parse/write `lm.<key>: value` lines, namespace-safe
+- [x] Field schema in prefs (hidden-note mirror deferred to v1.1)
+- [x] registerColumn for each field; registerSection with editable rows
+- [x] Matrix window: grid, inline edit, sort, filter (basic)
+- [ ] Manual test on Zotero 7 and 10 (macOS) — BLOCKED: Zotero not installed on dev machine; user to install
 - [ ] progress-log entries daily
 
 ## Definition of done

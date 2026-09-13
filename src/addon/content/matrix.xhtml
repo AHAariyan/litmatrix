@@ -1,0 +1,44 @@
+<?xml version="1.0"?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:xul="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
+<head>
+  <meta charset="utf-8" />
+  <title>LitMatrix</title>
+  <link rel="stylesheet" href="chrome://__addonRef__/content/matrix.css" />
+  <script src="chrome://zotero/content/include.js"></script>
+  <script>
+    window.addEventListener("load", function () {
+      if (typeof Zotero === "undefined") {
+        try {
+          window.Zotero = Components.classes["@zotero.org/Zotero;1"]
+            .getService(Components.interfaces.nsISupports).wrappedJSObject;
+        } catch (e) {}
+      }
+      if (typeof Zotero === "undefined" || !Zotero.__addonInstance__) {
+        document.getElementById("lm-status").textContent =
+          "LitMatrix is not loaded. Enable the plugin and reopen this window.";
+        return;
+      }
+      Zotero.__addonInstance__.hooks.onMatrixLoad(window);
+    });
+  </script>
+</head>
+<body>
+  <div class="lm-toolbar">
+    <span class="lm-scope-label">Collection:</span>
+    <strong id="lm-scope">…</strong>
+    <input id="lm-filter" type="search" placeholder="Filter rows…" />
+    <span class="lm-grow"></span>
+    <button id="lm-reload" type="button" title="Reload items">Reload</button>
+    <button id="lm-fields" type="button">Manage fields…</button>
+    <button id="lm-export" type="button" class="primary">Export CSV</button>
+  </div>
+  <div class="lm-gridwrap">
+    <table class="lm-grid">
+      <thead id="lm-thead"></thead>
+      <tbody id="lm-tbody"></tbody>
+    </table>
+  </div>
+  <div class="lm-statusbar"><span id="lm-status">…</span></div>
+</body>
+</html>

@@ -27,3 +27,9 @@
 - All 5 validation posts submitted (new thread + replies in 79165, 101870, 131095 — held for moderation; GitHub issue to Ze-Notes author — live). Waiting period: Sep 13–19. Daily: check "Your Discussions" + the GitHub issue; log every reply below.
 
 ### Replies log (one line each: name · what they want · would pay?)
+
+## 2026-09-13 (build)
+- Plugin free core written and building: src/ (store, schema, columns, item-pane section, matrix window, fields dialog, menus).
+- Beta .xpi: src/.scaffold/build/lit-matrix-for-zotero.xpi, copied to site/litmatrix-0.1.0-beta.1.xpi (served by GitHub Pages).
+- NOT yet run inside Zotero (not installed on this Mac). First manual test is the next task.
+- Validation posts still in forum moderation; GitHub issue #34 to Ze-Notes open, no reply.
