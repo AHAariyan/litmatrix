@@ -76,3 +76,25 @@ Would you be open to a quick chat? Ideas: cross-linking (open a Ze-Notes cell fr
    "- <name>: <what they asked for> · would pay? yes/no/unclear"
 3. Reply to every comment within a day (short, friendly, ask a follow-up question).
 4. On Sep 19: tell the AI "validation results" and it will apply the go/no-go rules.
+
+=====================================================================
+## ROUND 2 — wider net (no moderation delay). Post after the beta is smoke-tested.
+
+Beta download: https://ahaariyan.github.io/litmatrix/litmatrix-0.1.0-beta.1.xpi
+
+### Reddit r/Zotero (https://www.reddit.com/r/Zotero/submit) — flair: "Plugin" if available
+Title: [Beta] LitMatrix — custom typed fields + literature-review matrix inside Zotero
+Body:
+Zotero still has no custom fields or table view (Zotero 10 didn't add them), so I built a plugin: define your own fields (Method, Sample n, Finding, Relevance 1–5, Verdict…), edit them in the item pane or as sortable columns, and open any collection as an editable matrix with CSV export. Values are stored as `lm.key: value` lines in Extra, so they sync and stay plain text if you uninstall.
+Screenshots + beta .xpi: https://ahaariyan.github.io/litmatrix/
+It's a free beta; I'd love to know which fields you'd add first and whether it breaks on your setup (Zotero version/OS).
+
+### Reddit r/PhD / r/GradSchool / r/AskAcademia (same body, title below)
+Title: Made a Zotero plugin that turns a collection into an editable literature-review matrix (free beta)
+
+### Mastodon / Bluesky (academic circles; tag #Zotero #PhDchat #AcademicChatter)
+Zotero has no custom fields or table view, so I built one: LitMatrix — your own typed fields + an editable literature-review matrix, inside Zotero, values stored in Extra so they sync. Free beta, feedback wanted: https://ahaariyan.github.io/litmatrix/ #Zotero #PhDchat
+
+### Email to 5 librarians who maintain Zotero LibGuides (find via Google: "Zotero" site:libguides.com)
+Subject: Free Zotero plugin for literature-review matrices — would your researchers find it useful?
+Hi <name>, I saw your Zotero guide at <url>. I'm building LitMatrix, a free plugin that adds custom typed fields and an editable literature-review matrix inside Zotero (values live in the Extra field, so nothing breaks sync). Screenshots and beta: https://ahaariyan.github.io/litmatrix/ . If you think it would help students doing literature or systematic reviews, I'd be grateful for 10 minutes of feedback — or a mention in your guide once it's stable. Thanks, <your name>
